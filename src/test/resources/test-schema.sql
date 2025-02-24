@@ -10,6 +10,9 @@ CREATE TABLE users (
                        active BOOLEAN
 );
 
+-- Удаление таблицы "comment"
+DROP TABLE IF EXISTS comment;
+
 -- Удаление таблицы "post"
 DROP TABLE IF EXISTS post;
 
@@ -25,4 +28,13 @@ CREATE TABLE post (
                                     like_count BIGINT NOT NULL,
                                     created TIMESTAMP WITH TIME ZONE NOT NULL,
                                     updated TIMESTAMP WITH TIME ZONE NOT NULL
+);
+-- Создание таблицы "comment"
+CREATE TABLE comment (
+                         id BIGINT PRIMARY KEY,
+                         post_id BIGINT NOT NULL,
+                         content VARCHAR(255) NOT NULL,
+                         created TIMESTAMP WITH TIME ZONE NOT NULL,
+                         updated TIMESTAMP WITH TIME ZONE NOT NULL,
+                         FOREIGN KEY (post_id) REFERENCES post(id) -- ON DELETE CASCADE
 );

@@ -57,5 +57,23 @@ values
         'Седаны',
         180,
         CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP
-    );
+        CURRENT_TIMESTAMP);
+
+-- Создание таблицы "comment"
+create table if not exists comment
+(
+    id      bigserial PRIMARY KEY,
+    post_id BIGINT                   NOT NULL,
+    content VARCHAR(255)             NOT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES post (id) -- ON DELETE CASCADE
+);
+-- Вставка тестовых данных в таблицу "comment"
+insert into comment (post_id, content, created, updated)
+values (1, 'Отличный обзор! Хотелось бы узнать больше про дальность хода.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (1, 'Tesla снова удивляет! Отличная работа.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (2, 'BMW M3 – просто зверь! Интересно, как он в сравнении с C63 AMG.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (2, 'Хороший обзор, но хотелось бы больше деталей про подвеску.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (3, 'Audi A4 мне больше нравится по дизайну, но Mercedes комфортнее.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (3, 'Спасибо за сравнение! Очень полезная информация.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

@@ -1,39 +1,17 @@
 package ru.practicum.spring.mvc.cars.repository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.practicum.spring.mvc.cars.configuration.DataSourceConfiguration;
 import ru.practicum.spring.mvc.cars.domain.Post;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, JdbcPostRepository.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
-class JdbcPostRepositoryTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+class JdbcPostRepositoryTest extends AbstractDaoTest {
 
     @Autowired
     private PostRepository postRepository;
-
-    @BeforeEach
-    void setUp() {
-        // Очистка базы данных
-        jdbcTemplate.execute("DELETE FROM post");
-
-        // Добавление тестовых данных
-        jdbcTemplate.execute("INSERT INTO post (id, title, image_url, content, tag, like_count, created, updated) VALUES (1, 'Новая Tesla Model S', 'https://example.com/tesla_model_s.jpg', 'Обзор новой Tesla Model S с улучшенной батареей.', 'Электромобили', 150, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-        jdbcTemplate.execute("INSERT INTO post (id, title, image_url, content, tag, like_count, created, updated) VALUES (2, 'Обзор BMW M3 2025', 'https://example.com/bmw_m3_2025.jpg', 'Детальный обзор BMW M3 2025 года выпуска.', 'Спортивные автомобили', 200, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-        jdbcTemplate.execute("INSERT INTO post (id, title, image_url, content, tag, like_count, created, updated) VALUES (3, 'Сравнение Audi A4 и Mercedes C-Class', 'https://example.com/audi_a4_vs_mercedes_c_class.jpg', 'Сравнительный анализ Audi A4 и Mercedes C-Class.', 'Седаны', 180, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-
-    }
 
     @Test
     void findAll() {
