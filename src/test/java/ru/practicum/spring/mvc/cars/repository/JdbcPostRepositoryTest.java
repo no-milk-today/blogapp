@@ -27,7 +27,7 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
 
     @Test
     void findById() {
-        Post post = postRepository.findById(1L);
+        var post = postRepository.findById(1L);
 
         assertNotNull(post);
         assertEquals(1L, post.getId());
@@ -36,7 +36,7 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
 
     @Test
     void save() {
-        Post newPost = Post.builder()
+        var newPost = Post.builder()
                 .id(4L)
                 .title("Обзор Ford Mustang 2025")
                 .imageUrl("https://example.com/ford_mustang_2025.jpg")
@@ -49,7 +49,7 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
 
         postRepository.save(newPost);
 
-        Post savedPost = postRepository.findById(4L);
+        var savedPost = postRepository.findById(4L);
         assertNotNull(savedPost);
         assertEquals("Обзор Ford Mustang 2025", savedPost.getTitle());
         assertNotNull(savedPost.getDescription()); // auto-generated in DB
@@ -57,13 +57,13 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
 
     @Test
     void update() {
-        Post postToUpdate = postRepository.findById(1L);
+        var postToUpdate = postRepository.findById(1L);
         assertNotNull(postToUpdate);
 
         postToUpdate.setTitle("Обновленный обзор Tesla Model S");
         postRepository.update(postToUpdate);
 
-        Post updatedPost = postRepository.findById(1L);
+        var updatedPost = postRepository.findById(1L);
         assertEquals("Обновленный обзор Tesla Model S", updatedPost.getTitle());
     }
 
