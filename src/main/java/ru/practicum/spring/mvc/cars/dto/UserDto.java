@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.dto;
+package ru.practicum.spring.mvc.cars.dto;
 
 public record UserDto(
         Long id,

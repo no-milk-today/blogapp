@@ -1,8 +1,8 @@
-package ru.practicum.spring.mvc.test.mapper;
+package ru.practicum.spring.mvc.cars.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.practicum.spring.mvc.test.domain.Post;
+import ru.practicum.spring.mvc.cars.domain.Post;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

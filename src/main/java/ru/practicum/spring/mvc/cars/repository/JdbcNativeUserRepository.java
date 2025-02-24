@@ -1,9 +1,9 @@
-package ru.practicum.spring.mvc.test.repository;
+package ru.practicum.spring.mvc.cars.repository;
 
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.practicum.spring.mvc.test.domain.User;
+import ru.practicum.spring.mvc.cars.domain.User;
 
 import java.util.List;
 

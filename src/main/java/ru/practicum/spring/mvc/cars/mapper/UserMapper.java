@@ -1,8 +1,8 @@
-package ru.practicum.spring.mvc.test.mapper;
+package ru.practicum.spring.mvc.cars.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.spring.mvc.test.domain.User;
-import ru.practicum.spring.mvc.test.dto.UserDto;
+import ru.practicum.spring.mvc.cars.domain.User;
+import ru.practicum.spring.mvc.cars.dto.UserDto;
 
 @Component
 public class UserMapper {

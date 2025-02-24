@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.configuration;
+package ru.practicum.spring.mvc.cars.configuration;
 
 import org.h2.Driver;
 import org.springframework.beans.factory.annotation.Value;

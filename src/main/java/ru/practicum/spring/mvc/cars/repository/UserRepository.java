@@ -1,6 +1,6 @@
-package ru.practicum.spring.mvc.test.repository;
+package ru.practicum.spring.mvc.cars.repository;
 
-import ru.practicum.spring.mvc.test.domain.User;
+import ru.practicum.spring.mvc.cars.domain.User;
 
 import java.util.List;
 

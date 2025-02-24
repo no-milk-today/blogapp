@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.repository;
+package ru.practicum.spring.mvc.cars.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.practicum.spring.mvc.test.configuration.DataSourceConfiguration;
-import ru.practicum.spring.mvc.test.domain.User;
+import ru.practicum.spring.mvc.cars.configuration.DataSourceConfiguration;
+import ru.practicum.spring.mvc.cars.domain.User;
 
 import java.util.List;
 

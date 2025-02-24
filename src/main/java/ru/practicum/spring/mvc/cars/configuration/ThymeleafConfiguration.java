@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.configuration;
+package ru.practicum.spring.mvc.cars.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

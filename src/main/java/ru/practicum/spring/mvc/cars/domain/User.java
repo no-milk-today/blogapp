@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.domain;
+package ru.practicum.spring.mvc.cars.domain;
 
 public class User {
 

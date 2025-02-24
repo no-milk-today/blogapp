@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.test.controller;
+package ru.practicum.spring.mvc.cars.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.practicum.spring.mvc.test.dto.UserDto;
-import ru.practicum.spring.mvc.test.service.UserService;
+import ru.practicum.spring.mvc.cars.dto.UserDto;
+import ru.practicum.spring.mvc.cars.service.UserService;
 
 import java.util.List;
 
