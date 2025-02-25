@@ -2,6 +2,7 @@ package ru.practicum.spring.mvc.cars.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.spring.mvc.cars.domain.Post;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.List;
 public class JdbcPostRepository implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final JdbcCommentRepository commentRepository;
 
-    public JdbcPostRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcPostRepository(JdbcTemplate jdbcTemplate, JdbcCommentRepository commentRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -79,9 +82,18 @@ public class JdbcPostRepository implements PostRepository {
         );
     }
 
-    @Override
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from post where id = ?", id);
+    /**
+     * Deletes a post by its ID. This method performs two operations:
+     * 1. Deletes all comments associated with the given post.
+     * 2. Deletes the post itself from the database.
+     *
+     * @param postId the ID of the post to be deleted
+     */
+    @Transactional
+    public void deleteById(Long postId) {
+        commentRepository.deleteByPostId(postId);
+        String sql = "DELETE FROM post WHERE id = ?";
+        jdbcTemplate.update(sql, postId);
     }
 
     @Override
