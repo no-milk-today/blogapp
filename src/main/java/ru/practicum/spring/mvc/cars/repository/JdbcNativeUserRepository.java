@@ -32,7 +32,7 @@ public class JdbcNativeUserRepository implements UserRepository {
     @Override
     public List<User> findAll() {
         return jdbcTemplate.query(
-                "select id, first_name, last_name, description, age, active from users",
+                "select id, first_name, last_name, age, active from users",
                 (rs, rowNum) -> new User(
                         rs.getLong("id"),
                         rs.getString("first_name"),
