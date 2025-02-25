@@ -7,9 +7,9 @@ create table if not exists users(
                                     active boolean not null
 );
 
-insert into users(id, first_name, last_name, age, active) values (1, 'Иван', 'Иванов', 30, true);
-insert into users(id, first_name, last_name, age, active) values (2, 'Петр', 'Петров', 25, false);
-insert into users(id, first_name, last_name, age, active) values (3, 'Мария', 'Сидорова', 28, true);
+insert into users(first_name, last_name, age, active) values ('Иван', 'Иванов', 30, true);
+insert into users(first_name, last_name, age, active) values ('Петр', 'Петров', 25, false);
+insert into users(first_name, last_name, age, active) values ('Мария', 'Сидорова', 28, true);
 
 -- Создание таблицы "post"
 create table if not exists post (
@@ -32,7 +32,7 @@ values
     (
         1,
         'Новая Tesla Model S',
-        'https://example.com/tesla_model_s.jpg',
+        'https://hips.hearstapps.com/hmg-prod/images/2025-tesla-model-s-1-672d42e172407.jpg?crop=0.465xw:0.466xh;0.285xw,0.361xh&resize=2048:*',
         'Обзор новой Tesla Model S с улучшенной батареей.',
         'Электромобили',
         150,
@@ -42,7 +42,7 @@ values
     (
         2,
         'Обзор BMW M3 2025',
-        'https://example.com/bmw_m3_2025.jpg',
+        'https://th.bing.com/th/id/OIP.bzYFg35ON46k9aOrygsDiQHaEK?rs=1&pid=ImgDetMain',
         'Детальный обзор BMW M3 2025 года выпуска.',
         'Спортивные автомобили',
         200,
@@ -52,7 +52,7 @@ values
     (
         3,
         'Сравнение Audi A4 и Mercedes C-Class',
-        'https://example.com/audi_a4_vs_mercedes_c_class.jpg',
+        'https://cdn-ds.com/media/websites/3060/content/2018-MB-C-Class-vs-2018-Audi-A4_A_o.jpg?s=247784',
         'Сравнительный анализ Audi A4 и Mercedes C-Class.',
         'Седаны',
         180,
