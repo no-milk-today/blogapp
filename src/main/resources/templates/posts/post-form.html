@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Save Post</title>
+</head>
+<body>
+<div class="container">
+    <h3>Save Post</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save Employee
+
+    <form action="#" th:action="@{/posts/save}"
+          th:object="${post}" method="POST">
+        <!-- Add hidden field to handle the UPDATE -->
+        <input type="hidden" th:field="*{id}">
+        <!-- Input fields -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Title">
+        </div>
+
+        <div class="mb-3">
+            <label for="imageUrl" class="form-label">Image URL</label>
+            <input type="text" th:field="*{imageUrl}" class="form-control" id="imageUrl" placeholder="Image URL">
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea th:field="*{content}" class="form-control" id="content" rows="3" placeholder="Content"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="tag" class="form-label">Tag</label>
+            <input type="text" th:field="*{tag}" class="form-control" id="tag" placeholder="Tag">
+        </div>
+
+        <div class="mb-3">
+            <label for="likeCount" class="form-label">Likes</label>
+            <input type="number" th:field="*{likeCount}" class="form-control" id="likeCount" placeholder="Likes">
+        </div>
+
+        <div class="mb-3">
+            <label for="created" class="form-label">Created</label>
+            <input type="datetime-local" th:field="*{created}" class="form-control" id="created" placeholder="Created">
+        </div>
+
+        <div class="mb-3">
+            <label for="updated" class="form-label">Updated</label>
+            <input type="datetime-local" th:field="*{updated}" class="form-control" id="updated" placeholder="Updated">
+        </div>
+
+        <button type="submit" class="btn btn-info col-2">Save</button>
+    </form>
+
+    <hr>
+    <a th:href="@{/posts/list}" class="btn btn-secondary">Back to Posts List</a>
+</div>
+</body>
+</html>
