@@ -30,20 +30,27 @@ public class PostService {
     }
 
     public void addPost(PostDto postDto) {
-        postRepository.save(fromDtoConverter.apply(postDto));
+        Post post = fromDtoConverter.apply(postDto);
+        postRepository.save(post);
+        LOG.info("New saved post: {}", post);
     }
 
     public void updatePost(PostDto postDto) {
-        postRepository.update(fromDtoConverter.apply(postDto));
+        Post post = fromDtoConverter.apply(postDto);
+        postRepository.update(post);
+        LOG.info("Updated post: {}", post);
     }
 
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
+        LOG.debug("Found post by ID {}: {}", id, post);
         return toDtoConverter.apply(post);
     }
 
     public List<PostDto> findAll() {
-        return postRepository.findAll().stream()
+        List<Post> posts = postRepository.findAll();
+        LOG.debug("total count in DB:: {}", posts.size());
+        return posts.stream()
                 .map(toDtoConverter)
                 .collect(Collectors.toList());
     }
@@ -55,6 +62,7 @@ public class PostService {
      */
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+        LOG.info("Deleted post with ID: {}", id);
+        System.out.println();
     }
 }
-
