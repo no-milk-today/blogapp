@@ -1,0 +1,60 @@
+package ru.practicum.spring.mvc.cars.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.practicum.spring.mvc.cars.domain.Post;
+import ru.practicum.spring.mvc.cars.dto.PostDto;
+import ru.practicum.spring.mvc.cars.mapper.PostFromDtoConverter;
+import ru.practicum.spring.mvc.cars.mapper.PostToDtoConverter;
+import ru.practicum.spring.mvc.cars.repository.PostRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class PostService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PostService.class);
+
+    private final PostRepository postRepository;
+    private final PostFromDtoConverter fromDtoConverter;
+    private final PostToDtoConverter toDtoConverter;
+
+    @Autowired
+    public PostService(PostRepository postRepository, PostFromDtoConverter fromDtoConverter, PostToDtoConverter toDtoConverter) {
+        this.postRepository = postRepository;
+        this.fromDtoConverter = fromDtoConverter;
+        this.toDtoConverter = toDtoConverter;
+    }
+
+    public void addPost(PostDto postDto) {
+        postRepository.save(fromDtoConverter.apply(postDto));
+    }
+
+    public void updatePost(PostDto postDto) {
+        postRepository.update(fromDtoConverter.apply(postDto));
+    }
+
+    public PostDto findById(Long id) {
+        Post post = postRepository.findById(id);
+        return toDtoConverter.apply(post);
+    }
+
+    public List<PostDto> findAll() {
+        return postRepository.findAll().stream()
+                .map(toDtoConverter)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Deletes a post by its ID. The repository ensures that related comments are also deleted.
+     *
+     * @param id ID of the post
+     */
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
+    }
+}
+
