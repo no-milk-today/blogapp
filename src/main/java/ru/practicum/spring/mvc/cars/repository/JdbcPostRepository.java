@@ -1,5 +1,8 @@
 package ru.practicum.spring.mvc.cars.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +22,9 @@ public class JdbcPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return jdbcTemplate.query("select * from post", (rs, rowNum) -> {
+    public Page<Post> findAll(Pageable pageable) {
+        String sql = "select * from post limit ? offset ?";
+        List<Post> posts = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, (rs, rowNum) -> {
             Post post = Post.builder()
                     .id(rs.getLong("id"))
                     .title(rs.getString("title"))
@@ -34,6 +38,11 @@ public class JdbcPostRepository implements PostRepository {
                     .build();
             return post;
         });
+
+        String countSql = "select count(*) from post";
+        int total = jdbcTemplate.queryForObject(countSql, Integer.class);
+
+        return new PageImpl<>(posts, pageable, total);
     }
 
     @Override

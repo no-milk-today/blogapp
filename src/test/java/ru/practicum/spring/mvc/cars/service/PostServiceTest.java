@@ -1,10 +1,15 @@
 package ru.practicum.spring.mvc.cars.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.spring.mvc.cars.domain.Post;
 import ru.practicum.spring.mvc.cars.dto.PostDto;
 import ru.practicum.spring.mvc.cars.mapper.PostFromDtoConverter;
@@ -88,7 +93,9 @@ public class PostServiceTest {
                 .build();
 
         var posts = List.of(post1, post2);
-        when(postRepository.findAll()).thenReturn(posts);
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+        when(postRepository.findAll(pageable)).thenReturn(postPage);
 
         var postDto1 = PostDto.builder()
                 .id(1L)
@@ -115,11 +122,11 @@ public class PostServiceTest {
         when(toDtoConverter.apply(post1)).thenReturn(postDto1);
         when(toDtoConverter.apply(post2)).thenReturn(postDto2);
 
-        var result = underTest.findAll();
+        var result = underTest.findAll(pageable);
 
-        assertEquals(2, result.size());
-        assertEquals(postDto1, result.get(0));
-        assertEquals(postDto2, result.get(1));
+        assertEquals(2, result.getSize());
+        assertEquals(postDto1, result.getContent().get(0));
+        assertEquals(postDto2, result.getContent().get(1));
     }
 
     @Test

@@ -3,6 +3,9 @@ package ru.practicum.spring.mvc.cars.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.spring.mvc.cars.domain.Post;
 import ru.practicum.spring.mvc.cars.dto.PostDto;
@@ -47,12 +50,21 @@ public class PostService {
         return toDtoConverter.apply(post);
     }
 
-    public List<PostDto> findAll() {
-        List<Post> posts = postRepository.findAll();
-        LOG.debug("total count in DB:: {}", posts.size());
-        return posts.stream()
+    /**
+     * Finds all posts with pagination support.
+     *
+     * @param pageable the pagination information
+     * @return a page of post DTOs
+     */
+    public Page<PostDto> findAll(Pageable pageable) {
+        Page<Post> postPage = postRepository.findAll(pageable);
+        LOG.debug("total count in DB:: {}", postPage.getTotalElements());
+
+        List<PostDto> postDtos = postPage.stream()
                 .map(toDtoConverter)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(postDtos, pageable, postPage.getTotalElements());
     }
 
     /**
