@@ -27,10 +27,9 @@ create table if not exists post (
 
 -- Вставка тестовых данных в таблицу "post"
 insert into post
-(id, title, image_url, content, tag, like_count, created, updated)
+(title, image_url, content, tag, like_count, created, updated)
 values
     (
-        1,
         'Новая Tesla Model S',
         'https://hips.hearstapps.com/hmg-prod/images/2025-tesla-model-s-1-672d42e172407.jpg?crop=0.465xw:0.466xh;0.285xw,0.361xh&resize=2048:*',
         'Обзор новой Tesla Model S с улучшенной батареей.',
@@ -40,7 +39,6 @@ values
         CURRENT_TIMESTAMP
     ),
     (
-        2,
         'Обзор BMW M3 2025',
         'https://th.bing.com/th/id/OIP.bzYFg35ON46k9aOrygsDiQHaEK?rs=1&pid=ImgDetMain',
         'Детальный обзор BMW M3 2025 года выпуска.',
@@ -50,7 +48,6 @@ values
         CURRENT_TIMESTAMP
     ),
     (
-        3,
         'Сравнение Audi A4 и Mercedes C-Class',
         'https://cdn-ds.com/media/websites/3060/content/2018-MB-C-Class-vs-2018-Audi-A4_A_o.jpg?s=247784',
         'Сравнительный анализ Audi A4 и Mercedes C-Class.',

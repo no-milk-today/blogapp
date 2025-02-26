@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS post;
 
 -- Создание таблицы "post"
 CREATE TABLE post (
-                                    id BIGINT PRIMARY KEY,
+                                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                     title VARCHAR(50) NOT NULL,
                                     image_url VARCHAR(255) NOT NULL,
                                     content VARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE post (
 );
 -- Создание таблицы "comment"
 CREATE TABLE comment (
-                         id BIGINT PRIMARY KEY,
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          post_id BIGINT NOT NULL,
                          content VARCHAR(255) NOT NULL,
                          created TIMESTAMP WITH TIME ZONE NOT NULL,
