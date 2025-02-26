@@ -40,7 +40,6 @@ public class PostController {
         return "posts/list-posts";
     }
 
-    // todo: to be implemented
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model theModel) {
         PostDto post = new PostDto();
@@ -48,7 +47,6 @@ public class PostController {
         return "posts/post-form";
     }
 
-    // todo: to be implemented
     @GetMapping("/showFormForUpdate")
     public String showFormForUpdate(@RequestParam("postId") Long theId, Model theModel) {
         PostDto post = postService.findById(theId);
