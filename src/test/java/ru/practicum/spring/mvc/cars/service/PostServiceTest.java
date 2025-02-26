@@ -175,6 +175,50 @@ public class PostServiceTest {
     }
 
     @Test
+    void testFindByTag() {
+        var tag = "Tag1";
+        var pageable = PageRequest.of(0, 2);
+        var currentTimestamp = LocalDateTime.now();
+
+        var post1 = Post.builder()
+                .id(1L)
+                .title("Title 1")
+                .imageUrl("http://example.com/1.jpg")
+                .content("Content 1")
+                .tag(tag)
+                .likeCount(10L)
+                .created(currentTimestamp)
+                .updated(currentTimestamp)
+                .build();
+
+        var posts = List.of(post1);
+        Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+
+        when(postRepository.findByTag(tag, pageable)).thenReturn(postPage);
+
+        var postDto1 = PostDto.builder()
+                .id(1L)
+                .title("Title 1")
+                .imageUrl("http://example.com/1.jpg")
+                .content("Content 1")
+                .tag(tag)
+                .likeCount(10L)
+                .created(currentTimestamp)
+                .updated(currentTimestamp)
+                .build();
+
+        when(toDtoConverter.apply(post1)).thenReturn(postDto1);
+
+        var result = underTest.findByTag(tag, pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size(), "Must be at least one post in the result");
+        assertEquals(postDto1, result.getContent().getFirst());
+        assertEquals(tag, result.getContent().getFirst().getTag());
+    }
+
+
+    @Test
     void testUpdatePost() {
         var postId = 1L;
 

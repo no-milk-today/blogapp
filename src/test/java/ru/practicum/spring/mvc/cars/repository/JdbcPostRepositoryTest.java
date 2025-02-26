@@ -42,6 +42,23 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
     }
 
     @Test
+    void findByTag() {
+        var pageable = PageRequest.of(0, 3);
+        var tag = "Электромобили";
+        var postsPage = postRepository.findByTag(tag, pageable);
+
+        assertNotNull(postsPage);
+        assertTrue(postsPage.getTotalElements() > 0);
+
+        var posts = postsPage.getContent();
+        assertFalse(posts.isEmpty());
+
+        for (Post post : posts) {
+            assertEquals(tag, post.getTag());
+        }
+    }
+
+    @Test
     void save() {
         var newPost = Post.builder()
                 .id(4L)
