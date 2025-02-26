@@ -24,6 +24,7 @@
         <!-- Add hidden fields to handle the UPDATE -->
         <input type="hidden" th:field="*{id}">
         <input type="hidden" th:field="*{created}">
+        <input type="hidden" th:field="*{likeCount}">
         <!-- Input fields -->
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
@@ -45,11 +46,7 @@
             <input type="text" th:field="*{tag}" class="form-control" id="tag" placeholder="Tag">
         </div>
 
-        <div class="mb-3">
-            <label for="likeCount" class="form-label">Likes</label>
-            <input type="number" th:field="*{likeCount}" class="form-control" id="likeCount" placeholder="Likes">
-        </div>
-        <!-- Removed created and updated fields -->
+        <!-- Removed created and updated fields and likes -->
         <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 
