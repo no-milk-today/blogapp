@@ -40,8 +40,8 @@
                     <td th:text="${post.tag}"></td>
                 </tr>
                 <tr>
-                    <th>Likes</th> <!-- todo: add like functionality -->
-                    <td th:text="${post.likeCount}"></td>
+                    <th>Likes</th>
+                    <td id="likeCount" th:text="${post.likeCount}"></td>
                 </tr>
                 <tr>
                     <th>Created</th>
@@ -57,7 +57,32 @@
     <div class="mt-3">
         <a th:href="@{/posts/list}" class="btn btn-secondary">Back to Posts List</a>
         <a th:href="@{/posts/showFormForUpdate(postId=${post.id})}" class="btn btn-info">Update Post</a>
+        <a href="#" id="likeButton" class="btn btn-outline-primary">Like</a>
     </div>
 </div>
+<!-- script for XHR request -->
+<script th:inline="javascript">
+/*<![CDATA[*/
+    // get the context path from Thymeleaf
+    var contextPath = [[@{/}]];
+    var postId = [[${post.id}]];
+    document.getElementById("likeButton").addEventListener("click", function(event){
+        event.preventDefault(); // предотвращаем переход по ссылке
+        fetch(contextPath + 'posts/' + postId + '/like', {
+            method: 'POST'
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            // update counter asynchronously
+            document.getElementById("likeCount").innerText = data.likeCount;
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+        });
+    });
+/*]]>*/
+</script>
 </body>
 </html>

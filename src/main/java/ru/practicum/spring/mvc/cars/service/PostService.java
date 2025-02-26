@@ -89,6 +89,19 @@ public class PostService {
     public void deletePost(Long id) {
         postRepository.deleteById(id);
         LOG.info("Deleted post with ID: {}", id);
-        System.out.println();
     }
+
+    public PostDto incrementLikeCount(Long postId) {
+        Post post = postRepository.findById(postId);
+        if (post == null) {
+            LOG.error("Post with ID {} not found", postId);
+            throw new IllegalArgumentException("Post not found with id: " + postId);
+        }
+
+        post.setLikeCount(post.getLikeCount() + 1);
+        postRepository.update(post);
+        LOG.info("Post with ID {} has been liked.", postId);
+        return toDtoConverter.apply(post);
+    }
+
 }
