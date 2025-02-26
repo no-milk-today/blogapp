@@ -28,22 +28,24 @@
         <!-- Input fields -->
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Title">
+            <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Title" required>
         </div>
 
         <div class="mb-3">
             <label for="imageUrl" class="form-label">Image URL</label>
-            <input type="text" th:field="*{imageUrl}" class="form-control" id="imageUrl" placeholder="Image URL">
+            <input type="text" th:field="*{imageUrl}" class="form-control" id="imageUrl" placeholder="Image URL"
+                   required>
         </div>
 
         <div class="mb-3">
             <label for="content" class="form-label">Content</label>
-            <textarea th:field="*{content}" class="form-control" id="content" rows="3" placeholder="Content"></textarea>
+            <textarea th:field="*{content}" class="form-control" id="content" rows="3" placeholder="Content"
+                      required></textarea>
         </div>
 
         <div class="mb-3">
             <label for="tag" class="form-label">Tag</label>
-            <input type="text" th:field="*{tag}" class="form-control" id="tag" placeholder="Tag">
+            <input type="text" th:field="*{tag}" class="form-control" id="tag" placeholder="Tag" required>
         </div>
 
         <!-- Removed created and updated fields and likes -->

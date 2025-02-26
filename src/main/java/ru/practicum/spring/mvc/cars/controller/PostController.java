@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.spring.mvc.cars.dto.PostDto;
 import ru.practicum.spring.mvc.cars.service.PostService;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/posts")
@@ -43,6 +44,7 @@ public class PostController {
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model theModel) {
         PostDto post = new PostDto();
+        post.setLikeCount(0L); // by default
         theModel.addAttribute("post", post);
         return "posts/post-form";
     }
@@ -68,5 +70,16 @@ public class PostController {
             postService.updatePost(postDto);
         }
         return "redirect:/posts/list";
+    }
+
+    @PostMapping(value = "/{postId}/like", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> likePost(@PathVariable("postId") Long postId) {
+        PostDto updatedPost = postService.incrementLikeCount(postId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("likeCount", updatedPost.getLikeCount());
+
+        return response;
     }
 }

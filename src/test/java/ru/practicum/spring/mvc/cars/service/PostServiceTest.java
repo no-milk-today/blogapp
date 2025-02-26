@@ -232,4 +232,44 @@ public class PostServiceTest {
 
         verify(postRepository, times(1)).deleteById(id);
     }
+
+    @Test
+    void testIncrementLikeCount() {
+        var postId = 1L;
+
+        var existingPost = Post.builder()
+                .id(postId)
+                .title("Test Post")
+                .imageUrl("http://example.com/image.jpg")
+                .content("Test content")
+                .tag("Test")
+                .likeCount(5L)
+                .created(LocalDateTime.now())
+                .updated(LocalDateTime.now())
+                .build();
+
+        var expected = PostDto.builder()
+                .id(postId)
+                .title("Test Post")
+                .imageUrl("http://example.com/image.jpg")
+                .content("Test content")
+                .tag("Test")
+                .likeCount(6L) // likeCount incremented by 1
+                .created(existingPost.getCreated())
+                .updated(existingPost.getUpdated())
+                .build();
+
+        when(postRepository.findById(postId)).thenReturn(existingPost);
+        when(toDtoConverter.apply(existingPost)).thenReturn(expected);
+
+        var actual = underTest.incrementLikeCount(postId);
+
+        assertNotNull(actual, "The result should not be null");
+        assertEquals(6L, actual.getLikeCount(), "The like count should be incremented by 1");
+        assertEquals(expected, actual);
+        verify(postRepository, times(1)).update(existingPost);
+        assertEquals(6L, existingPost.getLikeCount());
+        verify(toDtoConverter, times(1)).apply(existingPost);
+    }
+
 }
