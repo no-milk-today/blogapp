@@ -57,6 +57,23 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
+    void getPostDetails_shouldReturnHtmlWithPost() throws Exception {
+        // Query the database to get the ID and Title of the first post
+        var post = jdbcTemplate.queryForMap("SELECT id, title FROM post ORDER BY id LIMIT 1");
+        var postId = ((Number) post.get("id")).longValue();
+        var title = (String) post.get("title");
+
+        mockMvc.perform(get("/posts/details").param("postId", String.valueOf(postId)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(view().name("posts/post-details"))
+                .andExpect(model().attributeExists("post"))
+                // Check that the Title in the HTML matches the retrieved title
+                .andExpect(xpath("//table/tr[th/text()='Title']/td").string(title));
+    }
+
+
+    @Test
     void listPosts_shouldReturnHtmlWithPosts() throws Exception {
         mockMvc.perform(get("/posts/list"))
                 .andExpect(status().isOk())
@@ -85,5 +102,19 @@ public class PostControllerIntegrationTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts/list"));
     }
+
+    @Test
+    void likePost_shouldIncrementLikeCountAndReturnJson() throws Exception {
+        // get the ID and like count of the first founded post from DB
+        var post = jdbcTemplate.queryForMap("SELECT id, like_count FROM post ORDER BY id LIMIT 1");
+        var postId = ((Number) post.get("id")).longValue();
+        int likeCount = ((Number) post.get("like_count")).intValue();
+
+        mockMvc.perform(post("/posts/" + postId + "/like"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.likeCount").value(likeCount + 1));
+    }
+
 
 }
