@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class HomeController {
 
-    @GetMapping
-    @ResponseBody
+    @RequestMapping("/")
     public String home() {
-        return "HELLO WORLD";
+        return "redirect:/posts/list";
     }
 }
