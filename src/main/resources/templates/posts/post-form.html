@@ -21,8 +21,9 @@
 
     <form action="#" th:action="@{/posts/save}"
           th:object="${post}" method="POST">
-        <!-- Add hidden field to handle the UPDATE -->
+        <!-- Add hidden fields to handle the UPDATE -->
         <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{created}">
         <!-- Input fields -->
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
@@ -48,17 +49,7 @@
             <label for="likeCount" class="form-label">Likes</label>
             <input type="number" th:field="*{likeCount}" class="form-control" id="likeCount" placeholder="Likes">
         </div>
-
-        <div class="mb-3">
-            <label for="created" class="form-label">Created</label>
-            <input type="datetime-local" th:field="*{created}" class="form-control" id="created" placeholder="Created">
-        </div>
-
-        <div class="mb-3">
-            <label for="updated" class="form-label">Updated</label>
-            <input type="datetime-local" th:field="*{updated}" class="form-control" id="updated" placeholder="Updated">
-        </div>
-
+        <!-- Removed created and updated fields -->
         <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 

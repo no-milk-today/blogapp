@@ -1,8 +1,9 @@
 package ru.practicum.spring.mvc.cars.service;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +35,9 @@ public class PostServiceTest {
     @Mock
     private PostToDtoConverter toDtoConverter;
 
+    @Captor
+    private ArgumentCaptor<PostDto> postDtoCaptor;
+
     @InjectMocks
     private PostService underTest;
 
@@ -61,15 +65,22 @@ public class PostServiceTest {
                 .updated(postDto.getUpdated())
                 .build();
 
-        when(fromDtoConverter.apply(postDto)).thenReturn(post);
+        when(fromDtoConverter.apply(any(PostDto.class))).thenReturn(post);
 
         underTest.addPost(postDto);
 
-        verify(postRepository, times(1)).save(post);
+        verify(fromDtoConverter).apply(postDtoCaptor.capture());
+        PostDto capturedDto = postDtoCaptor.getValue();
+
+        assertNotNull(capturedDto.getCreated(), "Created timestamp should be set");
+        assertNotNull(capturedDto.getUpdated(), "Updated timestamp should be set");
+
+        verify(postRepository).save(post);
     }
 
     @Test
     void testFindAll() {
+        var currentTimestamp = LocalDateTime.now();
         var post1 = Post.builder()
                 .id(1L)
                 .title("Title 1")
@@ -77,8 +88,8 @@ public class PostServiceTest {
                 .content("Content 1")
                 .tag("Tag1")
                 .likeCount(10L)
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
+                .created(currentTimestamp)
+                .updated(currentTimestamp)
                 .build();
 
         var post2 = Post.builder()
@@ -88,8 +99,8 @@ public class PostServiceTest {
                 .content("Content 2")
                 .tag("Tag2")
                 .likeCount(20L)
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
+                .created(currentTimestamp)
+                .updated(currentTimestamp)
                 .build();
 
         var posts = List.of(post1, post2);
@@ -164,34 +175,53 @@ public class PostServiceTest {
     }
 
     @Test
-    public void testUpdatePost() {
+    void testUpdatePost() {
+        var postId = 1L;
+
+        var postFromDb = Post.builder()
+                .id(postId)
+                .title("Original Title")
+                .imageUrl("http://example.com/original.jpg")
+                .content("Original content")
+                .tag("Original Tag")
+                .likeCount(50L)
+                .created(LocalDateTime.of(2023, 10, 1, 12, 0))
+                .updated(LocalDateTime.of(2023, 10, 1, 12, 0))
+                .build();
+
+        // updated dto without created and updated
         var postDto = PostDto.builder()
-                .id(1L)
+                .id(postId)
                 .title("Updated Title")
                 .imageUrl("http://example.com/updated.jpg")
                 .content("Updated content")
                 .tag("Updated Tag")
                 .likeCount(200L)
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
                 .build();
 
-        var post = Post.builder()
-                .id(1L)
+        // after conversion
+        var updatedPost = Post.builder()
+                .id(postId)
                 .title("Updated Title")
                 .imageUrl("http://example.com/updated.jpg")
                 .content("Updated content")
                 .tag("Updated Tag")
                 .likeCount(200L)
-                .created(postDto.getCreated())
-                .updated(postDto.getUpdated())
+                // created and updated set in service
                 .build();
 
-        when(fromDtoConverter.apply(postDto)).thenReturn(post);
+        when(postRepository.findById(postId)).thenReturn(postFromDb);
+        when(fromDtoConverter.apply(any(PostDto.class))).thenReturn(updatedPost);
 
         underTest.updatePost(postDto);
 
-        verify(postRepository, times(1)).update(post);
+        verify(fromDtoConverter).apply(postDtoCaptor.capture());
+        PostDto capturedDto = postDtoCaptor.getValue();
+
+        assertEquals(postFromDb.getCreated(), capturedDto.getCreated(), "Created timestamp should match existing post");
+        assertNotNull(capturedDto.getUpdated(), "Updated timestamp should be set");
+
+        verify(postRepository).update(updatedPost);
     }
 
     @Test

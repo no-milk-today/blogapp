@@ -13,6 +13,7 @@ import ru.practicum.spring.mvc.cars.mapper.PostFromDtoConverter;
 import ru.practicum.spring.mvc.cars.mapper.PostToDtoConverter;
 import ru.practicum.spring.mvc.cars.repository.PostRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +34,25 @@ public class PostService {
     }
 
     public void addPost(PostDto postDto) {
+        LocalDateTime now = LocalDateTime.now();
+        postDto.setCreated(now);
+        postDto.setUpdated(now);
+
         Post post = fromDtoConverter.apply(postDto);
         postRepository.save(post);
         LOG.info("New saved post: {}", post);
     }
 
     public void updatePost(PostDto postDto) {
+        Post existingPost = postRepository.findById(postDto.getId());
+
+        if (existingPost == null) {
+            throw new IllegalArgumentException("Post not found with id: " + postDto.getId());
+        }
+
+        postDto.setCreated(existingPost.getCreated());
+        postDto.setUpdated(LocalDateTime.now());
+
         Post post = fromDtoConverter.apply(postDto);
         postRepository.update(post);
         LOG.info("Updated post: {}", post);
