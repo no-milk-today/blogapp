@@ -1,10 +1,14 @@
 package ru.practicum.spring.mvc.cars.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.spring.mvc.cars.domain.Post;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -52,19 +56,23 @@ public class JdbcPostRepository implements PostRepository {
                 .build(), id);
     }
 
+    // https://docs.spring.io/spring-framework/docs/3.0.x/reference/jdbc.html#jdbc-auto-genereted-keys
     @Override
     public void save(Post post) {
-        jdbcTemplate.update(
-                "insert into post (id, title, image_url, content, tag, like_count, created, updated) values (?, ?, ?, ?, ?, ?, ?, ?)",
-                post.getId(),
-                post.getTitle(),
-                post.getImageUrl(),
-                post.getContent(),
-                post.getTag(),
-                post.getLikeCount(),
-                post.getCreated(),
-                post.getUpdated()
-        );
+        final String INSERT_SQL = "insert into post (title, image_url, content, tag, like_count, created, updated) values (?, ?, ?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getImageUrl());
+            ps.setString(3, post.getContent());
+            ps.setString(4, post.getTag());
+            ps.setLong(5, post.getLikeCount());
+            ps.setTimestamp(6, Timestamp.valueOf(post.getCreated()));
+            ps.setTimestamp(7, Timestamp.valueOf(post.getUpdated()));
+            return ps;
+        }, keyHolder);
     }
 
     @Override
