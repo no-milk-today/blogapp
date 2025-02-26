@@ -32,12 +32,21 @@ public class PostController {
     @GetMapping("/list")
     public String listPosts(@RequestParam(value = "page", defaultValue = "0") int page,
                             @RequestParam(value = "size", defaultValue = "10") int size,
+                            @RequestParam(value = "tag", required = false) String tag,
                             final Model theModel) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostDto> postPage = postService.findAll(pageable);
+
+        Page<PostDto> postPage;
+        if (tag != null && !tag.isEmpty()) {
+            postPage = postService.findByTag(tag, pageable);
+        } else {
+            postPage = postService.findAll(pageable);
+        }
+
         theModel.addAttribute("posts", postPage.getContent());
         theModel.addAttribute("currentPage", page);
         theModel.addAttribute("totalPages", postPage.getTotalPages());
+        theModel.addAttribute("tag", tag);
         return "posts/list-posts";
     }
 

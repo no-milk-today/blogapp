@@ -82,6 +82,24 @@ public class PostService {
     }
 
     /**
+     * Finds all posts by tag with pagination support.
+     *
+     * @param tag      tag for filtering
+     * @param pageable the pagination information
+     * @return a page of post DTOs
+     */
+    public Page<PostDto> findByTag(String tag, Pageable pageable) {
+        Page<Post> postPage = postRepository.findByTag(tag, pageable);
+        LOG.debug("Found {} posts with tag '{}'", postPage.getTotalElements(), tag);
+
+        List<PostDto> postDtos = postPage.stream()
+                .map(toDtoConverter)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postDtos, pageable, postPage.getTotalElements());
+    }
+
+    /**
      * Deletes a post by its ID. The repository ensures that related comments are also deleted.
      *
      * @param id ID of the post

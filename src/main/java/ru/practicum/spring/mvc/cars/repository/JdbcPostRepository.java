@@ -67,6 +67,30 @@ public class JdbcPostRepository implements PostRepository {
                 .build(), id);
     }
 
+    @Override
+    public Page<Post> findByTag(String tag, Pageable pageable) {
+        String sql = "select * from post where tag = ? limit ? offset ?";
+        List<Post> posts = jdbcTemplate.query(sql,
+                (rs, rowNum) -> Post.builder()
+                        .id(rs.getLong("id"))
+                        .title(rs.getString("title"))
+                        .imageUrl(rs.getString("image_url"))
+                        .content(rs.getString("content"))
+                        .description(rs.getString("description"))
+                        .tag(rs.getString("tag"))
+                        .likeCount(rs.getLong("like_count"))
+                        .created(rs.getTimestamp("created").toLocalDateTime())
+                        .updated(rs.getTimestamp("updated").toLocalDateTime())
+                        .build(),
+                tag, pageable.getPageSize(), pageable.getOffset()
+        );
+
+        String countSql = "select COUNT(*) from post where tag = ?";
+        int total = jdbcTemplate.queryForObject(countSql, Integer.class, tag);
+
+        return new PageImpl<>(posts, pageable, total);
+    }
+
     /**
      * Inserts new post into db.
      * The generated key (ID) for the inserted post is obtained

@@ -25,6 +25,14 @@
         Add Post
     </a>
 
+    <!-- Tag filtering form -->
+    <form th:action="@{/posts/list}" method="get" class="form-inline mb-3">
+        <div class="form-group mr-2">
+            <input type="text" name="tag" class="form-control" placeholder="Enter tag" th:value="${tag}">
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
         <tr>
@@ -37,7 +45,10 @@
         </thead>
 
         <tbody>
-        <tr th:each="tempPost : ${posts}">
+        <tr th:if="${posts.empty}">
+            <td colspan="5">No posts found for the selected tag.</td>
+        </tr>
+        <tr th:each="tempPost : ${posts}" th:unless="${posts.empty}">
             <td>
                 <img th:src="${tempPost.imageUrl}" alt="Post Image" class="img-thumbnail"
                      style="max-width: 50px; max-height: 50px;">
@@ -81,15 +92,15 @@
     <nav aria-label="Page navigation">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/posts/list(page=${currentPage - 1}, size=10)}" aria-label="Previous">
+                <a class="page-link" th:href="@{/posts/list(page=${currentPage - 1}, size=10, tag=${tag})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/posts/list(page=${i}, size=10)}" th:text="${i + 1}">1</a>
+                <a class="page-link" th:href="@{/posts/list(page=${i}, size=10, tag=${tag})}" th:text="${i + 1}">1</a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/posts/list(page=${currentPage + 1}, size=10)}" aria-label="Next">
+                <a class="page-link" th:href="@{/posts/list(page=${currentPage + 1}, size=10, tag=${tag})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -100,6 +111,3 @@
 
 </body>
 </html>
-
-
-
