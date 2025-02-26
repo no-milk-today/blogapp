@@ -44,12 +44,12 @@
                     <td th:text="${post.likeCount}"></td>
                 </tr>
                 <tr>
-                    <th>Created</th> <!-- todo: add datePattern -->
-                    <td th:text="${post.created}"></td>
+                    <th>Created</th>
+                    <td th:text="${#temporals.format(post.created, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 </tr>
                 <tr>
-                    <th>Updated</th> <!-- todo: add datePattern -->
-                    <td th:text="${post.updated}"></td>
+                    <th>Updated</th>
+                    <td th:text="${#temporals.format(post.updated, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 </tr>
             </table>
         </div>

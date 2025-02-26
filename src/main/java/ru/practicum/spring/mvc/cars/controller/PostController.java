@@ -1,5 +1,8 @@
 package ru.practicum.spring.mvc.cars.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +29,17 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public String listPosts(final Model theModel) {
-        List<PostDto> postList = postService.findAll();
-        // add to the spring model
-        theModel.addAttribute("posts", postList);
+    public String listPosts(@RequestParam(value = "page", defaultValue = "0") int page,
+                            @RequestParam(value = "size", defaultValue = "10") int size,
+                            final Model theModel) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostDto> postPage = postService.findAll(pageable);
+        theModel.addAttribute("posts", postPage.getContent());
+        theModel.addAttribute("currentPage", page);
+        theModel.addAttribute("totalPages", postPage.getTotalPages());
         return "posts/list-posts";
     }
 
-    // todo: to be implemented
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model theModel) {
         PostDto post = new PostDto();
@@ -41,7 +47,6 @@ public class PostController {
         return "posts/post-form";
     }
 
-    // todo: to be implemented
     @GetMapping("/showFormForUpdate")
     public String showFormForUpdate(@RequestParam("postId") Long theId, Model theModel) {
         PostDto post = postService.findById(theId);

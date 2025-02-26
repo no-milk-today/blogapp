@@ -1,5 +1,8 @@
 package ru.practicum.spring.mvc.cars.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -23,21 +26,29 @@ public class JdbcPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return jdbcTemplate.query("select * from post", (rs, rowNum) -> {
-            Post post = Post.builder()
-                    .id(rs.getLong("id"))
-                    .title(rs.getString("title"))
-                    .imageUrl(rs.getString("image_url"))
-                    .content(rs.getString("content"))
-                    .description(rs.getString("description"))
-                    .tag(rs.getString("tag"))
-                    .likeCount(rs.getLong("like_count"))
-                    .created(rs.getTimestamp("created").toLocalDateTime())
-                    .updated(rs.getTimestamp("updated").toLocalDateTime())
-                    .build();
-            return post;
-        });
+    public Page<Post> findAll(Pageable pageable) {
+        String sql = "select * from post limit ? offset ?";
+        List<Post> posts = jdbcTemplate.query(sql,
+                (rs, rowNum) -> {
+                    Post post = Post.builder()
+                            .id(rs.getLong("id"))
+                            .title(rs.getString("title"))
+                            .imageUrl(rs.getString("image_url"))
+                            .content(rs.getString("content"))
+                            .description(rs.getString("description"))
+                            .tag(rs.getString("tag"))
+                            .likeCount(rs.getLong("like_count"))
+                            .created(rs.getTimestamp("created").toLocalDateTime())
+                            .updated(rs.getTimestamp("updated").toLocalDateTime())
+                            .build();
+                    return post;
+                },
+                pageable.getPageSize(), pageable.getOffset()
+        );
+
+        // Преобразование списка Post в объект Page
+        int total = jdbcTemplate.queryForObject("select count(*) from post", Integer.class);
+        return new PageImpl<>(posts, pageable, total);
     }
 
     @Override

@@ -2,6 +2,9 @@ package ru.practicum.spring.mvc.cars.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.spring.mvc.cars.domain.Post;
 
 import java.time.LocalDateTime;
@@ -15,12 +18,16 @@ class JdbcPostRepositoryTest extends AbstractDaoTest {
 
     @Test
     void findAll() {
-        var posts = postRepository.findAll();
+        Pageable pageable = PageRequest.of(0, 3); // Первая страница, размер страницы - 3
+        Page<Post> postsPage = postRepository.findAll(pageable);
 
-        assertNotNull(posts);
-        assertEquals(3, posts.size());
+        assertNotNull(postsPage);
+        assertEquals(3, postsPage.getSize()); // Проверка размера страницы
 
-        var post = posts.getFirst();
+        var posts = postsPage.getContent();
+        assertFalse(posts.isEmpty());
+
+        var post = posts.get(0);
         assertEquals(1L, post.getId());
         assertEquals("Новая Tesla Model S", post.getTitle());
     }
