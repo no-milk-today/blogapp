@@ -56,7 +56,16 @@ public class JdbcPostRepository implements PostRepository {
                 .build(), id);
     }
 
-    // https://docs.spring.io/spring-framework/docs/3.0.x/reference/jdbc.html#jdbc-auto-genereted-keys
+    /**
+     * Inserts new post into db.
+     * The generated key (ID) for the inserted post is obtained
+     * and can be accessed via the provided {@link KeyHolder}.
+     *
+     * For more details, see:
+     * <a href="https://docs.spring.io/spring-framework/docs/3.0.x/reference/jdbc.html#jdbc-auto-genereted-keys">Spring Documentation - Automatically Generated Keys</a>
+     *
+     * @param post the post to be saved; must not be null
+     */
     @Override
     public void save(Post post) {
         final String INSERT_SQL = "insert into post (title, image_url, content, tag, like_count, created, updated) values (?, ?, ?, ?, ?, ?, ?)";
