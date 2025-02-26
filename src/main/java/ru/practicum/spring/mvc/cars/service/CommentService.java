@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.spring.mvc.cars.domain.Comment;
 import ru.practicum.spring.mvc.cars.dto.CommentDto;
-import ru.practicum.spring.mvc.cars.mapper.CommentFromDtoConverter;
-import ru.practicum.spring.mvc.cars.mapper.CommentToDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.CommentFromDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.CommentToDtoConverter;
 import ru.practicum.spring.mvc.cars.repository.CommentRepository;
 
 import java.util.List;

@@ -1,7 +1,8 @@
-package ru.practicum.spring.mvc.cars.mapper;
+package ru.practicum.spring.mvc.cars.converter;
 
 import org.junit.jupiter.api.Test;
 import ru.practicum.spring.mvc.cars.domain.Post;
+import ru.practicum.spring.mvc.cars.repository.mapper.PostRowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

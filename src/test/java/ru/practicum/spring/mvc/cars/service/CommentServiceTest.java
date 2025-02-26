@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.spring.mvc.cars.domain.Comment;
 import ru.practicum.spring.mvc.cars.dto.CommentDto;
-import ru.practicum.spring.mvc.cars.mapper.CommentFromDtoConverter;
-import ru.practicum.spring.mvc.cars.mapper.CommentToDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.CommentFromDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.CommentToDtoConverter;
 import ru.practicum.spring.mvc.cars.repository.CommentRepository;
 
 import java.time.LocalDateTime;

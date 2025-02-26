@@ -1,4 +1,4 @@
-package ru.practicum.spring.mvc.cars.mapper;
+package ru.practicum.spring.mvc.cars.repository.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.spring.mvc.cars.domain.User;

@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.spring.mvc.cars.domain.Post;
 import ru.practicum.spring.mvc.cars.dto.PostDto;
-import ru.practicum.spring.mvc.cars.mapper.PostFromDtoConverter;
-import ru.practicum.spring.mvc.cars.mapper.PostToDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.PostFromDtoConverter;
+import ru.practicum.spring.mvc.cars.converter.PostToDtoConverter;
 import ru.practicum.spring.mvc.cars.repository.PostRepository;
 
 import java.time.LocalDateTime;

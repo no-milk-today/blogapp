@@ -3,7 +3,7 @@ package ru.practicum.spring.mvc.cars.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.spring.mvc.cars.dto.UserDto;
-import ru.practicum.spring.mvc.cars.mapper.UserMapper;
+import ru.practicum.spring.mvc.cars.repository.mapper.UserMapper;
 import ru.practicum.spring.mvc.cars.repository.UserRepository;
 
 import java.util.List;
