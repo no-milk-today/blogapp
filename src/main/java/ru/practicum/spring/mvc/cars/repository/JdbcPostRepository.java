@@ -28,24 +28,26 @@ public class JdbcPostRepository implements PostRepository {
     @Override
     public Page<Post> findAll(Pageable pageable) {
         String sql = "select * from post limit ? offset ?";
-        List<Post> posts = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, (rs, rowNum) -> {
-            Post post = Post.builder()
-                    .id(rs.getLong("id"))
-                    .title(rs.getString("title"))
-                    .imageUrl(rs.getString("image_url"))
-                    .content(rs.getString("content"))
-                    .description(rs.getString("description"))
-                    .tag(rs.getString("tag"))
-                    .likeCount(rs.getLong("like_count"))
-                    .created(rs.getTimestamp("created").toLocalDateTime())
-                    .updated(rs.getTimestamp("updated").toLocalDateTime())
-                    .build();
-            return post;
-        });
+        List<Post> posts = jdbcTemplate.query(sql,
+                (rs, rowNum) -> {
+                    Post post = Post.builder()
+                            .id(rs.getLong("id"))
+                            .title(rs.getString("title"))
+                            .imageUrl(rs.getString("image_url"))
+                            .content(rs.getString("content"))
+                            .description(rs.getString("description"))
+                            .tag(rs.getString("tag"))
+                            .likeCount(rs.getLong("like_count"))
+                            .created(rs.getTimestamp("created").toLocalDateTime())
+                            .updated(rs.getTimestamp("updated").toLocalDateTime())
+                            .build();
+                    return post;
+                },
+                pageable.getPageSize(), pageable.getOffset()
+        );
 
-        String countSql = "select count(*) from post";
-        int total = jdbcTemplate.queryForObject(countSql, Integer.class);
-
+        // Преобразование списка Post в объект Page
+        int total = jdbcTemplate.queryForObject("select count(*) from post", Integer.class);
         return new PageImpl<>(posts, pageable, total);
     }
 
