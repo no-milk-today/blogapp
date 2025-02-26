@@ -42,7 +42,16 @@
                 <img th:src="${tempPost.imageUrl}" alt="Post Image" class="img-thumbnail"
                      style="max-width: 50px; max-height: 50px;">
             </td>
-            <td th:text="${tempPost.title}"></td>
+
+            <td>
+                <a th:href="@{/posts/details(postId=${tempPost.id})}" style="text-decoration: none; color: inherit;">
+                    <div>
+                        <span th:text="${tempPost.title}"></span><br>
+                        <small th:text="${tempPost.description}"></small>
+                    </div>
+                </a>
+            </td>
+
             <td th:text="${tempPost.tag}"></td>
             <td th:text="${tempPost.likeCount}"></td>
             <td>
