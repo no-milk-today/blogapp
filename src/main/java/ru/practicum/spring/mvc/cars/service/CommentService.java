@@ -52,9 +52,10 @@ public class CommentService {
             throw new IllegalArgumentException("Comment not found with id: " + commentDto.getId());
         }
 
+        // commentDto.setPostId(existingComment.getPostId()); // с клиента приходил JSON без постId
         commentDto.setCreated(existingComment.getCreated());
         commentDto.setUpdated(LocalDateTime.now());
-
+        LOG.debug("DTO to check: {}", commentDto);
         Comment comment = fromDtoConverter.apply(commentDto);
         commentRepository.update(comment);
         LOG.info("Updated comment: {}", comment);
