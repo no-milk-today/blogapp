@@ -56,7 +56,7 @@ public class JdbcCommentRepository implements CommentRepository {
             ps.setTimestamp(4, Timestamp.valueOf(comment.getUpdated()));
             return ps;
         }, keyHolder);
-        // comment.setId(keyHolder.getKey().longValue());
+        comment.setId(keyHolder.getKey().longValue());
     }
 
     @Override

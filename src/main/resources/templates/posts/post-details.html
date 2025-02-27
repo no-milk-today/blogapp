@@ -60,7 +60,6 @@
     <ul id="commentList" class="list-group">
         <li th:each="comment : ${comments}" class="list-group-item">
             <p th:text="${comment.content}"></p>
-            <small><i th:text="${#temporals.format(comment.created, 'yyyy-MM-dd HH:mm')}"></i></small>
             <button class="btn btn-danger btn-sm delete-comment" th:data-comment-id="${comment.id}" th:data-post-id="${post.id}">Delete</button>
         </li>
     </ul>
@@ -70,7 +69,7 @@
         <div class="form-group">
             <textarea class="form-control" name="content" id="commentContent" rows="3" placeholder="Write your comment..."></textarea>
         </div>
-<!--        <input type="hidden" id="postId" value="[[${post.id}]]" />-->
+        <!-- <input type="hidden" id="postId" value="[[${post.id}]]" /> -->
         <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
     </form>
 </div>
@@ -125,7 +124,6 @@
             var newComment = document.createElement("li");
             newComment.className = "list-group-item";
             newComment.innerHTML = '<p>' + data.content + '</p>' +
-                                   '<small><i>' + data.created + '</i></small>' +
                                    '<button class="btn btn-danger btn-sm delete-comment" data-comment-id="' + data.id + '" data-post-id="' + data.postId + '">Delete</button>';
             document.getElementById("commentList").appendChild(newComment);
         })

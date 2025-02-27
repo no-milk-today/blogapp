@@ -104,8 +104,8 @@ public class PostController {
     @PostMapping("/addComment")
     @ResponseBody
     public CommentDto addComment(@RequestBody CommentDto commentDto) {
-        commentService.addComment(commentDto);
-        return commentDto;
+        CommentDto savedCommentDto = commentService.addComment(commentDto); // to get new comment ID
+        return savedCommentDto;
     }
 
     @GetMapping("/deleteComment")

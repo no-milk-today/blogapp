@@ -32,12 +32,17 @@ public class CommentService {
         this.toDtoConverter = toDtoConverter;
     }
 
-    public void addComment(CommentDto commentDto) {
+    public CommentDto addComment(CommentDto commentDto) {
         Comment comment = fromDtoConverter.apply(commentDto);
         comment.setCreated(LocalDateTime.now());
         comment.setUpdated(LocalDateTime.now());
         commentRepository.save(comment);
-        LOG.info("New saved comment: {}", comment);
+
+        // Обновляем CommentDto актуальными данными
+        commentDto.setId(comment.getId());
+        commentDto.setCreated(comment.getCreated());
+        commentDto.setUpdated(comment.getUpdated());
+        return commentDto;
     }
 
     public void updateComment(CommentDto commentDto) {
