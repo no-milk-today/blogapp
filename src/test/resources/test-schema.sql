@@ -1,15 +1,3 @@
--- Таблица с пользователями
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
-                       id BIGINT PRIMARY KEY,
-                       first_name VARCHAR(255),
-                       last_name VARCHAR(255),
-                       description VARCHAR(3)
-                           GENERATED ALWAYS AS (SUBSTRING(last_name, 1, 3)),
-                       age INT,
-                       active BOOLEAN
-);
-
 -- Удаление таблицы "comment"
 DROP TABLE IF EXISTS comment;
 
