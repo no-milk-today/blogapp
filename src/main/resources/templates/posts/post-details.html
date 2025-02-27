@@ -59,8 +59,11 @@
     <h3>Comments</h3>
     <ul id="commentList" class="list-group">
         <li th:each="comment : ${comments}" class="list-group-item">
-            <p th:text="${comment.content}"></p>
-            <button class="btn btn-danger btn-sm delete-comment" th:data-comment-id="${comment.id}" th:data-post-id="${post.id}">Delete</button>
+            <div class="comment-content" th:text="${comment.content}" style="cursor: pointer;"></div>
+            <textarea class="comment-edit form-control" style="display: none; resize: vertical;"></textarea>
+            <button class="btn btn-danger btn-sm delete-comment" th:data-comment-id="${comment.id}" th:data-post-id="${post.id}">
+                Delete
+            </button>
         </li>
     </ul>
     <hr/>
@@ -101,7 +104,12 @@
     // comment functionality
     document.getElementById("commentForm").addEventListener("submit", function(event){
         event.preventDefault(); // prevent form submission
-        var content = document.getElementById("commentContent").value;
+        var content = document.getElementById("commentContent").value.trim();
+
+        if (content === '') {
+            alert('Comment cannot be empty.');
+            return;
+        }
 
         fetch(contextPath + 'posts/addComment', {
             method: 'POST',
@@ -123,8 +131,27 @@
             // Append the new comment to the comment list
             var newComment = document.createElement("li");
             newComment.className = "list-group-item";
-            newComment.innerHTML = '<p>' + data.content + '</p>' +
-                                   '<button class="btn btn-danger btn-sm delete-comment" data-comment-id="' + data.id + '" data-post-id="' + data.postId + '">Delete</button>';
+
+            var commentContentDiv = document.createElement("div");
+            commentContentDiv.className = "comment-content";
+            commentContentDiv.style.cursor = "pointer";
+            commentContentDiv.textContent = data.content;
+
+            var commentEditTextarea = document.createElement("textarea");
+            commentEditTextarea.className = "comment-edit form-control";
+            commentEditTextarea.style.display = "none";
+            commentEditTextarea.style.resize = "vertical";
+
+            var deleteButton = document.createElement("button");
+            deleteButton.className = "btn btn-danger btn-sm delete-comment";
+            deleteButton.setAttribute("data-comment-id", data.id);
+            deleteButton.setAttribute("data-post-id", data.postId);
+            deleteButton.textContent = "Delete";
+
+            newComment.appendChild(commentContentDiv);
+            newComment.appendChild(commentEditTextarea);
+            newComment.appendChild(deleteButton);
+
             document.getElementById("commentList").appendChild(newComment);
         })
         .catch(function(error) {
@@ -132,11 +159,83 @@
         });
     });
 
+    // Update comment functionality
+    document.getElementById("commentList").addEventListener("click", function(event){
+        if (event.target.classList.contains("comment-content")) {
+            var commentContent = event.target;
+            var commentEdit = commentContent.nextElementSibling;
+
+            commentContent.style.display = 'none';
+            commentEdit.style.display = 'block';
+            commentEdit.value = commentContent.textContent.trim();
+            commentEdit.focus();
+        }
+    });
+
+    document.getElementById("commentList").addEventListener("keydown", function(event){
+        if (event.target.classList.contains("comment-edit")) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                var commentEdit = event.target;
+                var commentContent = commentEdit.previousElementSibling;
+                var commentItem = commentEdit.parentElement;
+                var commentId = commentItem.querySelector('.delete-comment').getAttribute('data-comment-id');
+                var newContent = commentEdit.value.trim();
+
+                if (newContent === '') {
+                    alert('Comment cannot be empty.');
+                    return;
+                }
+
+                // Отправляем AJAX-запрос на обновление комментария
+                fetch(contextPath + 'posts/updateComment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: commentId,
+                        content: newContent
+                    })
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Failed to update comment');
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    // Update comment.content
+                    commentContent.textContent = data.content;
+                    // Hide textarea and display div with text
+                    commentEdit.style.display = 'none';
+                    commentContent.style.display = 'block';
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the comment.');
+                    //Back to render comment content
+                    commentEdit.style.display = 'none';
+                    commentContent.style.display = 'block';
+                });
+            } else if (event.key === 'Escape') {
+                // Cancel updating if press Escape
+                var commentEdit = event.target;
+                var commentContent = commentEdit.previousElementSibling;
+                commentEdit.style.display = 'none';
+                commentContent.style.display = 'block';
+            }
+        }
+    });
+
     // Delete comment functionality
     document.getElementById("commentList").addEventListener("click", function(event){
         if (event.target.classList.contains("delete-comment")) {
             var commentId = event.target.getAttribute("data-comment-id");
             var postId = event.target.getAttribute("data-post-id");
+
+            if (!confirm('Are you sure you want to delete this comment?')) {
+                return;
+            }
 
             fetch(contextPath + 'posts/deleteComment?commentId=' + commentId + '&postId=' + postId, {
                 method: 'GET'
@@ -149,6 +248,7 @@
             })
             .catch(function(error) {
                 console.error('Error:', error);
+                alert('An error occurred while deleting the comment.');
             });
         }
     });

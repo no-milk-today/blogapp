@@ -113,4 +113,13 @@ public class PostController {
         commentService.deleteComment(commentId);
         return "redirect:/posts/details?postId=" + postId;
     }
+
+    @PostMapping("/updateComment")
+    @ResponseBody
+    public CommentDto updateComment(@RequestBody CommentDto commentDto) {
+        commentService.updateComment(commentDto);
+        CommentDto updatedComment = commentService.findById(commentDto.getId());
+        return updatedComment;
+    }
+
 }
