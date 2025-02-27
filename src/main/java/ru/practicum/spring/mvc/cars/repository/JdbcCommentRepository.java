@@ -61,8 +61,8 @@ public class JdbcCommentRepository implements CommentRepository {
 
     @Override
     public void update(Comment comment) {
-        String sql = "update comment set post_id = ?, content = ?, created = ?, updated = ? where id = ?";
-        jdbcTemplate.update(sql, comment.getPostId(), comment.getContent(), comment.getCreated(), comment.getUpdated(), comment.getId());
+        String sql = "update comment set  content = ?, updated = ? where id = ?";
+        jdbcTemplate.update(sql, comment.getContent(), comment.getUpdated(), comment.getId());
     }
 
     @Override
