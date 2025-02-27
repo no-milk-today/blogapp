@@ -11,4 +11,5 @@ public interface CommentRepository {
     void update(Comment post);
     void deleteById(Long id);
     void deleteByPostId(Long postId);
+    int countByPostId(Long postId);
 }

@@ -89,4 +89,10 @@ public class CommentService {
         commentRepository.deleteByPostId(postId);
         LOG.info("Deleted all comments for post with ID: {}", postId);
     }
+
+    public int countCommentsByPostId(Long postId) {
+        int countByPostId = commentRepository.countByPostId(postId);
+        LOG.debug("Comments count: {} by postId: {}", countByPostId, postId);
+        return countByPostId;
+    }
 }

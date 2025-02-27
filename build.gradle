@@ -27,6 +27,7 @@ dependencies {
     implementation 'com.h2database:h2:2.2.224'
     implementation 'org.springframework.data:spring-data-jdbc:3.4.1'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.4.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 

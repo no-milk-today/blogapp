@@ -81,6 +81,17 @@ public class CommentServiceTest {
     }
 
     @Test
+    void testCountCommentsByPostId() {
+        when(commentRepository.countByPostId(100L)).thenReturn(5);
+
+        int count = underTest.countCommentsByPostId(100L);
+
+        assertEquals(5, count);
+        verify(commentRepository, times(1)).countByPostId(100L);
+    }
+
+
+    @Test
     void testFindById() {
         var commentId = 1L;
         var comment = Comment.builder()

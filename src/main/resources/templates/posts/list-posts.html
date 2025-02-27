@@ -40,6 +40,7 @@
             <th>Title</th>
             <th>Tag</th>
             <th>Likes</th>
+            <th>Comments</th> <!-- New column for comments count -->
             <th>Action</th>
         </tr>
         </thead>
@@ -65,6 +66,7 @@
 
             <td th:text="${tempPost.tag}"></td>
             <td th:text="${tempPost.likeCount}"></td>
+            <td th:text="${commentCounts[tempPost.id]}"></td> <!-- New column for comments count -->
             <td>
                 <!-- Add update button Link -->
                 <a th:href="@{/posts/showFormForUpdate(postId=${tempPost.id})}" class="btn btn-info btn-sm">

@@ -88,4 +88,16 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
         var comments = commentRepository.findAllByPostId(1L);
         assertTrue(comments.isEmpty());
     }
+
+    @Test
+    void countByPostId() {
+        int count = commentRepository.countByPostId(1L);
+        assertEquals(2, count);
+
+        count = commentRepository.countByPostId(2L);
+        assertEquals(1, count);
+
+        count = commentRepository.countByPostId(3L);
+        assertEquals(0, count);
+    }
 }

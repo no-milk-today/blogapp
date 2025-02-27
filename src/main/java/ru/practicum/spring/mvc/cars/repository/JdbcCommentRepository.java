@@ -49,7 +49,7 @@ public class JdbcCommentRepository implements CommentRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[]{"id"});
             ps.setLong(1, comment.getPostId());
             ps.setString(2, comment.getContent());
             ps.setTimestamp(3, Timestamp.valueOf(comment.getCreated()));
@@ -75,5 +75,10 @@ public class JdbcCommentRepository implements CommentRepository {
     public void deleteByPostId(Long postId) {
         String sql = "delete from comment where post_id = ?";
         jdbcTemplate.update(sql, postId);
+    }
+
+    public int countByPostId(Long postId) {
+        String sql = "select count(*) from comment where post_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, postId);
     }
 }

@@ -14,6 +14,7 @@ import ru.practicum.spring.mvc.cars.service.PostService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -50,10 +51,14 @@ public class PostController {
             postPage = postService.findAll(pageable);
         }
 
+        Map<Long, Integer> commentCounts = postPage.getContent().stream()
+                .collect(Collectors.toMap(PostDto::getId, post -> commentService.countCommentsByPostId(post.getId())));
+
         theModel.addAttribute("posts", postPage.getContent());
         theModel.addAttribute("currentPage", page);
         theModel.addAttribute("totalPages", postPage.getTotalPages());
         theModel.addAttribute("tag", tag);
+        theModel.addAttribute("commentCounts", commentCounts);
         return "posts/list-posts";
     }
 
