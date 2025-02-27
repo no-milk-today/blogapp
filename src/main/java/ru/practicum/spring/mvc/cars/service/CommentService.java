@@ -10,6 +10,7 @@ import ru.practicum.spring.mvc.cars.converter.CommentFromDtoConverter;
 import ru.practicum.spring.mvc.cars.converter.CommentToDtoConverter;
 import ru.practicum.spring.mvc.cars.repository.CommentRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +34,22 @@ public class CommentService {
 
     public void addComment(CommentDto commentDto) {
         Comment comment = fromDtoConverter.apply(commentDto);
+        comment.setCreated(LocalDateTime.now());
+        comment.setUpdated(LocalDateTime.now());
         commentRepository.save(comment);
         LOG.info("New saved comment: {}", comment);
     }
 
     public void updateComment(CommentDto commentDto) {
+        Comment existingComment = commentRepository.findById(commentDto.getId());
+
+        if (existingComment == null) {
+            throw new IllegalArgumentException("Comment not found with id: " + commentDto.getId());
+        }
+
+        commentDto.setCreated(existingComment.getCreated());
+        commentDto.setUpdated(LocalDateTime.now());
+
         Comment comment = fromDtoConverter.apply(commentDto);
         commentRepository.update(comment);
         LOG.info("Updated comment: {}", comment);

@@ -54,19 +54,30 @@ public class CommentServiceTest {
 
     @Test
     void testUpdateComment() {
-        var commentDto = CommentDto.builder()
-                .id(1L)
-                .postId(100L)
-                .content("Updated comment")
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
+        var commentId = 1L;
+        var oldContent = "Old content";
+        var newContent = "New updated content";
+
+        var commentFromDb = Comment.builder()
+                .id(commentId)
+                .content(oldContent)
+                .created(LocalDateTime.now().minusDays(1))
                 .build();
 
-        var expectedComment = fromDtoConverter.apply(commentDto);
+        var updateDto = CommentDto.builder()
+                .id(commentId)
+                .content(newContent)
+                .build();
 
-        underTest.updateComment(commentDto);
+        when(commentRepository.findById(commentId)).thenReturn(commentFromDb);
 
-        verify(commentRepository, times(1)).update(expectedComment);
+        underTest.updateComment(updateDto);
+
+        verify(commentRepository).findById(commentId);
+        verify(commentRepository).update(argThat(comment ->
+                comment.getContent().equals(newContent) &&
+                        comment.getCreated().equals(commentFromDb.getCreated())
+        ));
     }
 
     @Test
