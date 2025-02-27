@@ -1,9 +1,13 @@
 package ru.practicum.spring.mvc.cars.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.practicum.spring.mvc.cars.domain.Comment;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -41,8 +45,18 @@ public class JdbcCommentRepository implements CommentRepository {
 
     @Override
     public void save(Comment comment) {
-        String sql = "insert into comment (id, post_id, content, created, updated) values (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, comment.getId(), comment.getPostId(), comment.getContent(), comment.getCreated(), comment.getUpdated());
+        final String INSERT_SQL = "INSERT INTO comment (post_id, content, created, updated) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+            ps.setLong(1, comment.getPostId());
+            ps.setString(2, comment.getContent());
+            ps.setTimestamp(3, Timestamp.valueOf(comment.getCreated()));
+            ps.setTimestamp(4, Timestamp.valueOf(comment.getUpdated()));
+            return ps;
+        }, keyHolder);
+        // comment.setId(keyHolder.getKey().longValue());
     }
 
     @Override

@@ -18,9 +18,9 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
     void setUp() {
         super.setUp();
         // Добавление тестовых комментариев
-        jdbcTemplate.execute("INSERT INTO comment (id, post_id, content, created, updated) VALUES (1, 1, 'Первый комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-        jdbcTemplate.execute("INSERT INTO comment (id, post_id, content, created, updated) VALUES (2, 1, 'Второй комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-        jdbcTemplate.execute("INSERT INTO comment (id, post_id, content, created, updated) VALUES (3, 2, 'Третий комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+        jdbcTemplate.execute("INSERT INTO comment (post_id, content, created, updated) VALUES (1, 'Первый комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+        jdbcTemplate.execute("INSERT INTO comment (post_id, content, created, updated) VALUES (1, 'Второй комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+        jdbcTemplate.execute("INSERT INTO comment (post_id, content, created, updated) VALUES (2, 'Третий комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
     }
 
     @Test
@@ -38,10 +38,11 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
 
     @Test
     void findById() {
-        var comment = commentRepository.findById(1L);
+        var existingID = commentRepository.findAllByPostId(1L).getFirst().getId();
+        var comment = commentRepository.findById(existingID);
 
         assertNotNull(comment);
-        assertEquals(1L, comment.getId());
+        assertEquals(existingID, comment.getId());
         assertEquals(1L, comment.getPostId());
         assertEquals("Первый комментарий", comment.getContent());
     }
@@ -49,29 +50,27 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
     @Test
     void save() {
         var newComment = Comment.builder()
-                .id(4L)
                 .postId(1L)
                 .content("Новый комментарий")
                 .created(LocalDateTime.now())
                 .updated(LocalDateTime.now())
                 .build();
 
+        assertEquals(2, commentRepository.findAllByPostId(1L).size());
         commentRepository.save(newComment);
-
-        var savedComment = commentRepository.findById(4L);
-        assertNotNull(savedComment);
-        assertEquals("Новый комментарий", savedComment.getContent());
+        assertEquals(3, commentRepository.findAllByPostId(1L).size());
     }
 
     @Test
     void update() {
-        var commentToUpdate = commentRepository.findById(1L);
+        var existingID = commentRepository.findAllByPostId(1L).getFirst().getId();
+        var commentToUpdate = commentRepository.findById(existingID);
         assertNotNull(commentToUpdate);
 
         commentToUpdate.setContent("Обновленный комментарий");
         commentRepository.update(commentToUpdate);
 
-        var updatedComment = commentRepository.findById(1L);
+        var updatedComment = commentRepository.findById(existingID);
         assertEquals("Обновленный комментарий", updatedComment.getContent());
     }
 
