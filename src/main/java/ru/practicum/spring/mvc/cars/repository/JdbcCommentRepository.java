@@ -77,6 +77,7 @@ public class JdbcCommentRepository implements CommentRepository {
         jdbcTemplate.update(sql, postId);
     }
 
+    @Override
     public int countByPostId(Long postId) {
         String sql = "select count(*) from comment where post_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, postId);
