@@ -34,8 +34,9 @@ public class CommentService {
 
     public CommentDto addComment(CommentDto commentDto) {
         Comment comment = fromDtoConverter.apply(commentDto);
-        comment.setCreated(LocalDateTime.now());
-        comment.setUpdated(LocalDateTime.now());
+        var currentTimestamp = LocalDateTime.now();
+        comment.setCreated(currentTimestamp);
+        comment.setUpdated(currentTimestamp);
         commentRepository.save(comment);
 
         // Обновляем CommentDto актуальными данными

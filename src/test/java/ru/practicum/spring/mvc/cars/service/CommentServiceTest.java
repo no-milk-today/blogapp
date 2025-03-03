@@ -3,6 +3,7 @@ package ru.practicum.spring.mvc.cars.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.spring.mvc.cars.domain.Comment;
@@ -38,18 +39,25 @@ public class CommentServiceTest {
     @Test
     void testAddComment() {
         var commentDto = CommentDto.builder()
-                .id(1L)
                 .postId(100L)
                 .content("Test comment")
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
                 .build();
 
         var expectedComment = fromDtoConverter.apply(commentDto);
+        // according UI behavior
+        assertNull(expectedComment.getCreated());
+        assertNull(expectedComment.getUpdated());
 
-        underTest.addComment(commentDto);
+        var commentCaptor = ArgumentCaptor.forClass(Comment.class);
 
-        verify(commentRepository, times(1)).save(expectedComment);
+        var commentFromDB = underTest.addComment(commentDto);
+
+        assertNotNull(commentFromDB.getCreated());
+        assertNotNull(commentFromDB.getUpdated());
+        assertEquals("Test comment", commentFromDB.getContent());
+        assertEquals(100L, commentFromDB.getPostId());
+
+        verify(commentRepository, times(1)).save(commentCaptor.capture());
     }
 
     @Test
