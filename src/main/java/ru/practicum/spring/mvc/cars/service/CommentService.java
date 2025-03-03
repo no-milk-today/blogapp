@@ -34,15 +34,19 @@ public class CommentService {
 
     public CommentDto addComment(CommentDto commentDto) {
         Comment comment = fromDtoConverter.apply(commentDto);
-        var currentTimestamp = LocalDateTime.now();
+        LocalDateTime currentTimestamp = LocalDateTime.now();
         comment.setCreated(currentTimestamp);
         comment.setUpdated(currentTimestamp);
+
+        LOG.debug("Comment before saving in DB: {}", comment);
         commentRepository.save(comment);
+        LOG.debug("Comment after saving in DB: {}", comment);
 
         // Обновляем CommentDto актуальными данными
         commentDto.setId(comment.getId());
         commentDto.setCreated(comment.getCreated());
         commentDto.setUpdated(comment.getUpdated());
+        LOG.info("Added new comment with ID {}, with postId: {}", comment.getId(), comment.getPostId());
         return commentDto;
     }
 
