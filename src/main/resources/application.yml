@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/carsdb
-    username: pguser
+    username: ${PG_USERNAME}
     password: password
   main:
     web-application-type: servlet
