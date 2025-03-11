@@ -1,48 +1,46 @@
 # Блог о машинах
 
-Простое веб-приложение на **Spring MVC**, представляющее блог о машинах.
+Простое веб-приложение на **Spring Boot**, представляющее блог о машинах.
 
 ## Технологии
 
-- **Java 21**, **Spring Framework 6** (Spring MVC)
-- **Gradle** – сборка проекта
-- **Thymeleaf** – серверный шаблонизатор HTML с поддержкой inline JavaScript
-- **Jackson** – сериализация/десериализация JSON
+- **Java 21**, **Spring Boot 3.4.3**
+- **Maven** – сборка проекта
+- **Thymeleaf** – серверный шаблонизатор HTML с поддержкой JavaScript
 - **JdbcTemplate** – работа с базой данных
-- **H2 Database** – встраиваемая база данных
+- **PostgreSQL** – основная база данных
+- **Flyway** – миграции базы данных
 - **JUnit 5** – модульные и интеграционные тесты
-- **Tomcat** – развёртывание приложения (WAR-файл)
+- **Testcontainers** – тестирование с использованием контейнеров
 
 ## Сборка и запуск
 
-1. **Сборка проекта:**
+1. **Поднять docker compose:**
 
    ```bash
-   gradle clean build
+   export PG_USERNAME=yourDesiredUsername
+   export PG_PASSWORD=yourDesiredPassword
+   docker-compose up -d
    ```
 
-2. **Развёртывание на Tomcat:**
+2. **Запуск приложения:**
 
-    - Кинуть WAR-файл из `build/libs/` в папку `webapps` в Tomcat.
-    - имя WAR-файла соответствует контексту приложения: `spring-mvc-app.war`.
-
-3. **Запуск Tomcat:**
-
-    - Запустите сервер Tomcat.
-    - В IntelliJ IDEA можно настроить локальную конфигурацию Tomcat для автодеплоя.
+   ```bash
+   java -jar target/spring-boot-app.jar
+   ```
 
 ## Доступ к приложению
 
 - **Лента постов:**
 
   ```
-  http://localhost:8081/spring-mvc-app/posts/list
+  http://localhost:8080/posts/list
   ```
 
 - **Страница поста:**
 
   ```
-  http://localhost:8081/spring-mvc-app/posts/details?postId=1
+  http://localhost:8080/posts/details?postId=1
   ```
 
 ## Тестирование
@@ -50,16 +48,12 @@
 - **Запуск тестов:**
 
   ```bash
-  gradle test
+  mvn test
   ```
 
   Тесты включают модульные и интеграционные, охватывающие основные компоненты приложения.
 
 ## Дополнительная информация
 
-- **Схема базы данных и начальные данные** находятся в файле `src/main/resources/schema.sql`.
-- Приложение использует H2 Database для простоты настройки и тестирования.
-
----
-
-Быстрый старт: собрать с помощью Gradle, задеплоить WAR-файл на Tomcat, запустить и перейти по указанным адресам для использования приложения.
+- **Схема базы данных и начальные данные** находятся в файле `src/main/resources/db/migration/V1__Initial_Setup.sql`.
+- Приложение использует PostgreSQL.
