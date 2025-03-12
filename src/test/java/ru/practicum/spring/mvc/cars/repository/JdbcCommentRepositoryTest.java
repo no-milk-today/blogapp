@@ -3,14 +3,12 @@ package ru.practicum.spring.mvc.cars.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.spring.mvc.cars.domain.Comment;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS) // to refresh the context (and connection pool) avoiding stale pool issues
 class JdbcCommentRepositoryTest extends AbstractDaoTest {
 
     @Autowired
