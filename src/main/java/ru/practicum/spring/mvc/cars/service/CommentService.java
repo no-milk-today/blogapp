@@ -53,7 +53,7 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(commentDto.getId());
 
         if (existingComment == null) {
-            throw new ResourceNotFoundException("Comment not found with id: " + commentDto.getId());
+            throw new ResourceNotFoundException("Comment with id: [%s] not found".formatted(commentDto.getId()));
         }
 
         // commentDto.setPostId(existingComment.getPostId()); // с клиента приходил JSON без постId
