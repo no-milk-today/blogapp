@@ -25,9 +25,11 @@
 
 2. **Запуск приложения:**
 
-   ```bash
-   java -jar target/spring-boot-app.jar
-   ```
+Прокинуть env переменные `PG_USERNAME=значение` и `PG_PASSWORD=значение`.
+
+```bash
+java -jar target/spring-boot-app.jar
+```
 
 ## Доступ к приложению
 
