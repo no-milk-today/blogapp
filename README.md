@@ -28,7 +28,8 @@
 Прокинуть env переменные `PG_USERNAME=значение` и `PG_PASSWORD=значение`.
 
 ```bash
-java -jar target/spring-boot-app.jar
+$env:PG_USERNAME="значение"; $env:PG_PASSWORD="значение"; 
+java -jar .\target\cars-0.0.1-SNAPSHOT.jar
 ```
 
 ## Доступ к приложению
