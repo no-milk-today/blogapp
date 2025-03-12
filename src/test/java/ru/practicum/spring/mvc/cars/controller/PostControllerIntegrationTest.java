@@ -3,45 +3,36 @@ package ru.practicum.spring.mvc.cars.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.spring.mvc.cars.configuration.DataSourceConfiguration;
-import ru.practicum.spring.mvc.cars.configuration.WebConfiguration;
+import ru.practicum.spring.mvc.cars.repository.AbstractTestcontainers;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, WebConfiguration.class})
-@WebAppConfiguration
-@TestPropertySource(locations = "classpath:test-application.properties")
-public class PostControllerIntegrationTest {
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@AutoConfigureMockMvc
+public class PostControllerIntegrationTest extends AbstractTestcontainers {
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
+        jdbcTemplate = getJdbcTemplate();
         // cleanup tables
-        jdbcTemplate.execute("delete from comment");
-        jdbcTemplate.execute("delete from post");
-        jdbcTemplate.execute("alter table comment alter column id restart with 1");
-        jdbcTemplate.execute("alter table post alter column id restart with 1");
+        jdbcTemplate.execute("TRUNCATE TABLE comment RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE post RESTART IDENTITY CASCADE");
 
         // Post initial data
         jdbcTemplate.update(

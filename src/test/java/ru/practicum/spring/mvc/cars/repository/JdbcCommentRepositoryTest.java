@@ -17,6 +17,9 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
     @BeforeEach
     void setUp() {
         super.setUp();
+        // Clear existing data from the comment table and reset the sequence
+        jdbcTemplate.execute("TRUNCATE TABLE comment RESTART IDENTITY CASCADE");
+
         // Добавление тестовых комментариев
         jdbcTemplate.execute("INSERT INTO comment (post_id, content, created, updated) VALUES (1, 'Первый комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
         jdbcTemplate.execute("INSERT INTO comment (post_id, content, created, updated) VALUES (1, 'Второй комментарий', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
@@ -30,7 +33,7 @@ class JdbcCommentRepositoryTest extends AbstractDaoTest {
         assertNotNull(comments);
         assertEquals(2, comments.size());
 
-        var comment = comments.get(0);
+        var comment = comments.getFirst();
         assertEquals(1L, comment.getId());
         assertEquals(1L, comment.getPostId());
         assertEquals("Первый комментарий", comment.getContent());

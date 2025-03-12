@@ -5,6 +5,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.practicum.spring.mvc.cars.domain.Comment;
+import ru.practicum.spring.mvc.cars.repository.mapper.CommentRowMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -14,33 +15,23 @@ import java.util.List;
 public class JdbcCommentRepository implements CommentRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CommentRowMapper commentRowMapper;
 
-    public JdbcCommentRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcCommentRepository(JdbcTemplate jdbcTemplate, CommentRowMapper commentRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.commentRowMapper = commentRowMapper;
     }
 
     @Override
     public List<Comment> findAllByPostId(Long postId) {
         String sql = "select * from comment where post_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> Comment.builder()
-                .id(rs.getLong("id"))
-                .postId(rs.getLong("post_id"))
-                .content(rs.getString("content"))
-                .created(rs.getTimestamp("created").toLocalDateTime())
-                .updated(rs.getTimestamp("updated").toLocalDateTime())
-                .build(), postId);
+        return jdbcTemplate.query(sql, commentRowMapper, postId);
     }
 
     @Override
     public Comment findById(Long id) {
         String sql = "select * from comment where id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> Comment.builder()
-                .id(rs.getLong("id"))
-                .postId(rs.getLong("post_id"))
-                .content(rs.getString("content"))
-                .created(rs.getTimestamp("created").toLocalDateTime())
-                .updated(rs.getTimestamp("updated").toLocalDateTime())
-                .build(), id);
+        return jdbcTemplate.queryForObject(sql, commentRowMapper, id);
     }
 
     @Override

@@ -165,4 +165,3 @@ public class CommentServiceTest {
         verify(commentRepository, times(1)).deleteByPostId(postId);
     }
 }
-

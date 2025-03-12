@@ -1,23 +1,22 @@
 package ru.practicum.spring.mvc.cars.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.spring.mvc.cars.domain.Comment;
 import ru.practicum.spring.mvc.cars.dto.CommentDto;
 import ru.practicum.spring.mvc.cars.converter.CommentFromDtoConverter;
 import ru.practicum.spring.mvc.cars.converter.CommentToDtoConverter;
+import ru.practicum.spring.mvc.cars.exception.ResourceNotFoundException;
 import ru.practicum.spring.mvc.cars.repository.CommentRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CommentService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CommentService.class);
 
     private final CommentRepository commentRepository;
     private final CommentFromDtoConverter fromDtoConverter;
@@ -38,15 +37,15 @@ public class CommentService {
         comment.setCreated(currentTimestamp);
         comment.setUpdated(currentTimestamp);
 
-        LOG.debug("Comment before saving in DB: {}", comment);
+        log.debug("Comment before saving in DB: {}", comment);
         commentRepository.save(comment);
-        LOG.debug("Comment after saving in DB: {}", comment);
+        log.debug("Comment after saving in DB: {}", comment);
 
         // Обновляем CommentDto актуальными данными
         commentDto.setId(comment.getId());
         commentDto.setCreated(comment.getCreated());
         commentDto.setUpdated(comment.getUpdated());
-        LOG.info("Added new comment with ID {}, with postId: {}", comment.getId(), comment.getPostId());
+        log.info("Added new comment with ID {}, with postId: {}", comment.getId(), comment.getPostId());
         return commentDto;
     }
 
@@ -54,27 +53,27 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(commentDto.getId());
 
         if (existingComment == null) {
-            throw new IllegalArgumentException("Comment not found with id: " + commentDto.getId());
+            throw new ResourceNotFoundException("Comment with id: [%s] not found".formatted(commentDto.getId()));
         }
 
         // commentDto.setPostId(existingComment.getPostId()); // с клиента приходил JSON без постId
         commentDto.setCreated(existingComment.getCreated());
         commentDto.setUpdated(LocalDateTime.now());
-        LOG.debug("DTO to check: {}", commentDto);
+        log.debug("DTO to check: {}", commentDto);
         Comment comment = fromDtoConverter.apply(commentDto);
         commentRepository.update(comment);
-        LOG.info("Updated comment: {}", comment);
+        log.info("Updated comment: {}", comment);
     }
 
     public CommentDto findById(Long id) {
         Comment comment = commentRepository.findById(id);
-        LOG.debug("Found comment by ID {}: {}", id, comment);
+        log.debug("Found comment by ID {}: {}", id, comment);
         return toDtoConverter.apply(comment);
     }
 
     public List<CommentDto> findAllByPostId(Long postId) {
         List<Comment> comments = commentRepository.findAllByPostId(postId);
-        LOG.debug("Found {} comments for post with ID {}", comments.size(), postId);
+        log.debug("Found {} comments for post with ID {}", comments.size(), postId);
         return comments.stream()
                 .map(toDtoConverter)
                 .collect(Collectors.toList());
@@ -82,7 +81,7 @@ public class CommentService {
 
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
-        LOG.info("Deleted comment with ID: {}", id);
+        log.info("Deleted comment with ID: {}", id);
     }
 
     /**
@@ -92,12 +91,12 @@ public class CommentService {
      */
     public void deleteCommentsByPostId(Long postId) {
         commentRepository.deleteByPostId(postId);
-        LOG.info("Deleted all comments for post with ID: {}", postId);
+        log.info("Deleted all comments for post with ID: {}", postId);
     }
 
     public int countCommentsByPostId(Long postId) {
         int countByPostId = commentRepository.countByPostId(postId);
-        LOG.debug("Comments count: {} by postId: {}", countByPostId, postId);
+        log.debug("Comments count: {} by postId: {}", countByPostId, postId);
         return countByPostId;
     }
 }

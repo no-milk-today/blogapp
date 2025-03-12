@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.spring.mvc.cars.domain.Post;
+import ru.practicum.spring.mvc.cars.repository.mapper.PostRowMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -19,32 +20,19 @@ public class JdbcPostRepository implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final JdbcCommentRepository commentRepository;
+    private final PostRowMapper postRowMapper;
 
-    public JdbcPostRepository(JdbcTemplate jdbcTemplate, JdbcCommentRepository commentRepository) {
+
+    public JdbcPostRepository(JdbcTemplate jdbcTemplate, JdbcCommentRepository commentRepository, PostRowMapper postRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.commentRepository = commentRepository;
+        this.postRowMapper = postRowMapper;
     }
 
     @Override
     public Page<Post> findAll(Pageable pageable) {
         String sql = "select * from post limit ? offset ?";
-        List<Post> posts = jdbcTemplate.query(sql,
-                (rs, rowNum) -> {
-                    Post post = Post.builder()
-                            .id(rs.getLong("id"))
-                            .title(rs.getString("title"))
-                            .imageUrl(rs.getString("image_url"))
-                            .content(rs.getString("content"))
-                            .description(rs.getString("description"))
-                            .tag(rs.getString("tag"))
-                            .likeCount(rs.getLong("like_count"))
-                            .created(rs.getTimestamp("created").toLocalDateTime())
-                            .updated(rs.getTimestamp("updated").toLocalDateTime())
-                            .build();
-                    return post;
-                },
-                pageable.getPageSize(), pageable.getOffset()
-        );
+        List<Post> posts = jdbcTemplate.query(sql, postRowMapper, pageable.getPageSize(), pageable.getOffset());
 
         // Преобразование списка Post в объект Page
         int total = jdbcTemplate.queryForObject("select count(*) from post", Integer.class);
@@ -54,36 +42,13 @@ public class JdbcPostRepository implements PostRepository {
     @Override
     public Post findById(Long id) {
         String sql = "select * from post where id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> Post.builder()
-                .id(rs.getLong("id"))
-                .title(rs.getString("title"))
-                .imageUrl(rs.getString("image_url"))
-                .content(rs.getString("content"))
-                .description(rs.getString("description"))
-                .tag(rs.getString("tag"))
-                .likeCount(rs.getLong("like_count"))
-                .created(rs.getTimestamp("created").toLocalDateTime())
-                .updated(rs.getTimestamp("updated").toLocalDateTime())
-                .build(), id);
+        return jdbcTemplate.queryForObject(sql, postRowMapper, id);
     }
 
     @Override
     public Page<Post> findByTag(String tag, Pageable pageable) {
         String sql = "select * from post where tag = ? limit ? offset ?";
-        List<Post> posts = jdbcTemplate.query(sql,
-                (rs, rowNum) -> Post.builder()
-                        .id(rs.getLong("id"))
-                        .title(rs.getString("title"))
-                        .imageUrl(rs.getString("image_url"))
-                        .content(rs.getString("content"))
-                        .description(rs.getString("description"))
-                        .tag(rs.getString("tag"))
-                        .likeCount(rs.getLong("like_count"))
-                        .created(rs.getTimestamp("created").toLocalDateTime())
-                        .updated(rs.getTimestamp("updated").toLocalDateTime())
-                        .build(),
-                tag, pageable.getPageSize(), pageable.getOffset()
-        );
+        List<Post> posts = jdbcTemplate.query(sql, postRowMapper, tag, pageable.getPageSize(), pageable.getOffset());
 
         String countSql = "select COUNT(*) from post where tag = ?";
         int total = jdbcTemplate.queryForObject(countSql, Integer.class, tag);
