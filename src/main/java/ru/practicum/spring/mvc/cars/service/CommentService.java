@@ -7,6 +7,7 @@ import ru.practicum.spring.mvc.cars.domain.Comment;
 import ru.practicum.spring.mvc.cars.dto.CommentDto;
 import ru.practicum.spring.mvc.cars.converter.CommentFromDtoConverter;
 import ru.practicum.spring.mvc.cars.converter.CommentToDtoConverter;
+import ru.practicum.spring.mvc.cars.exception.ResourceNotFoundException;
 import ru.practicum.spring.mvc.cars.repository.CommentRepository;
 
 import java.time.LocalDateTime;
@@ -52,7 +53,7 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(commentDto.getId());
 
         if (existingComment == null) {
-            throw new IllegalArgumentException("Comment not found with id: " + commentDto.getId());
+            throw new ResourceNotFoundException("Comment not found with id: " + commentDto.getId());
         }
 
         // commentDto.setPostId(existingComment.getPostId()); // с клиента приходил JSON без постId

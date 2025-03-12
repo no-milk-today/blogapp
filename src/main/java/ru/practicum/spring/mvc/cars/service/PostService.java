@@ -10,6 +10,7 @@ import ru.practicum.spring.mvc.cars.domain.Post;
 import ru.practicum.spring.mvc.cars.dto.PostDto;
 import ru.practicum.spring.mvc.cars.converter.PostFromDtoConverter;
 import ru.practicum.spring.mvc.cars.converter.PostToDtoConverter;
+import ru.practicum.spring.mvc.cars.exception.ResourceNotFoundException;
 import ru.practicum.spring.mvc.cars.repository.PostRepository;
 
 import java.time.LocalDateTime;
@@ -45,7 +46,7 @@ public class PostService {
         Post existingPost = postRepository.findById(postDto.getId());
 
         if (existingPost == null) {
-            throw new IllegalArgumentException("Post not found with id: " + postDto.getId());
+            throw new ResourceNotFoundException("Post not found with id: " + postDto.getId());
         }
 
         postDto.setCreated(existingPost.getCreated());
@@ -111,7 +112,7 @@ public class PostService {
         Post post = postRepository.findById(postId);
         if (post == null) {
             log.error("Post with ID {} not found", postId);
-            throw new IllegalArgumentException("Post not found with id: " + postId);
+            throw new ResourceNotFoundException("Post not found with id: " + postId);
         }
 
         post.setLikeCount(post.getLikeCount() + 1);
